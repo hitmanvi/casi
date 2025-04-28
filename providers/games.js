@@ -107,14 +107,12 @@ async function extractProviderData() {
     
     // Process each provider
     for (const provider of providers) {
-      // Format provider name for URL (replace spaces with hyphens)
-      const formattedProviderName = provider.name.replace(/\s+/g, '-');
       
-      console.log(`Processing provider: ${provider.name} (${formattedProviderName})`);
+      console.log(`Processing provider: ${provider.name} (${provider.formattedName})`);
       console.log(`Expected total games: ${provider.totalGames}`);
       
       // Fetch games for this provider
-      await fetchAllGames(formattedProviderName);
+      await fetchAllGames(provider.formattedName);
       
       // Add a delay between providers to avoid overwhelming the server
       await new Promise(resolve => setTimeout(resolve, 2000));
