@@ -3,7 +3,7 @@ import json
 from bs4 import BeautifulSoup
 
 def parse_provider_details():
-    details_dir = "providers/details"
+    details_dir = "slotcatalog/details"
     all_provider_details = []
     
     # Iterate through all HTML files in details directory
