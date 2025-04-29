@@ -55,7 +55,7 @@ def parse_provider_details():
                 if logo_img:
                     provider_details['Logo'] = logo_img.get('src', '')
                 provider_details[key] = value
-                
+                provider_details['name'] = filename.split('.')[0].split('_')[0]
             if provider_details:
                 all_provider_details.append(provider_details)
                 
