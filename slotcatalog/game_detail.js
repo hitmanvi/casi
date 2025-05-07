@@ -81,7 +81,7 @@ async function processGameUrls() {
         }));
         
         // Add a small delay between batches to avoid overwhelming the server
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
     
     console.log('All game details have been processed.');
