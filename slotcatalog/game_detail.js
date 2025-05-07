@@ -70,7 +70,7 @@ async function processGameUrls() {
     const concurrencyLimit = 10;
     
     // Process in batches
-    for (let i = 0; i < gameUrls.length; i += concurrencyLimit) {
+    for (let i = 6000; i < gameUrls.length; i += concurrencyLimit) {
         const batch = gameUrls.slice(i, i + concurrencyLimit);
         console.log(`Processing batch ${Math.floor(i/concurrencyLimit) + 1}: ${i+1}-${Math.min(i+concurrencyLimit, gameUrls.length)} of ${gameUrls.length}`);
         
