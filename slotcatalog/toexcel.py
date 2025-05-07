@@ -48,6 +48,24 @@ def convert_json_to_csv(json_file_path, output_csv_path=None):
         # Reset index to make game names a column
         df.reset_index(inplace=True)
         df.rename(columns={'index': 'Game Name'}, inplace=True)
+        # Sort the DataFrame to have Game Name and provider columns first
+        # First, check if 'provider' is in the data
+        provider_column = None
+        for column in df.columns:
+            if column.lower() == 'provider':
+                provider_column = column
+                break
+        
+        # Rearrange columns to have Game Name and provider (if exists) first
+        if provider_column:
+            # Get all columns except Game Name and provider
+            other_columns = [col for col in df.columns if col != 'Game Name' and col != provider_column]
+            # Reorder columns with Game Name and provider first
+            df = df[['Game Name', provider_column] + other_columns]
+        else:
+            # If provider column doesn't exist, just ensure Game Name is first
+            other_columns = [col for col in df.columns if col != 'Game Name']
+            df = df[['Game Name'] + other_columns]
         
         # Write to CSV
         df.to_csv(output_csv_path, index=False, encoding='utf-8')

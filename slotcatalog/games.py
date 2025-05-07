@@ -3,6 +3,8 @@ import re
 from bs4 import BeautifulSoup
 from pathlib import Path
 import json
+import csv
+
 def extract_game_data(html_content):
     """
     Extract game data from HTML content containing slotCard elements.
@@ -101,12 +103,97 @@ def process_game_files(directory_path='games_data'):
     
     return all_games
 
+
+def combine_json_files():
+    base_dir = Path(__file__).parent
+    games_dir = base_dir / 'games'
+    output_file = base_dir / 'games_combined.json'
+    
+    all_games = []
+    
+    if not games_dir.exists():
+        print(f"Directory not found: {games_dir}")
+        return
+    
+    # Process each JSON file in the games directory
+    for json_file_path in games_dir.glob('*.json'):
+        try:
+            with open(json_file_path, 'r', encoding='utf-8') as file:
+                games = json.load(file)
+                all_games.extend(games)
+                print(f"Added {len(games)} games from {json_file_path.name}")
+        except Exception as e:
+            print(f"Error processing {json_file_path.name}: {str(e)}")
+    
+    # Save the combined data to a new JSON file
+    try:
+        with open(output_file, 'w', encoding='utf-8') as file:
+            json.dump(all_games, file, indent=4, ensure_ascii=False)
+        print(f"Successfully combined {len(all_games)} games into {output_file.name}")
+    except Exception as e:
+        print(f"Error saving combined JSON file: {str(e)}")
+
+def convert_json_to_csv():
+    base_dir = Path(__file__).parent
+    json_file = base_dir / 'games_combined.json'
+    csv_file = base_dir / 'games_combined.csv'
+    
+    if not json_file.exists():
+        print(f"JSON file not found: {json_file}")
+        return
+    
+    try:
+        # Read the JSON data
+        with open(json_file, 'r', encoding='utf-8') as file:
+            games = json.load(file)
+        
+        if not games:
+            print("No games found in the JSON file")
+            return
+        
+        # Get all possible field names from the data (union of all game fields)
+        fieldnames = set()
+        for game in games:
+            fieldnames.update(game.keys())
+        
+        # Ensure 'name' and 'provider' fields are at the beginning of the fieldnames list
+        if 'name' in fieldnames:
+            fieldnames.remove('name')
+        if 'provider' in fieldnames:
+            fieldnames.remove('provider')
+        
+        # Create a new ordered list with 'name' and 'provider' first, followed by other fields
+        ordered_fieldnames = ['name', 'provider']
+        ordered_fieldnames.extend(sorted(list(fieldnames)))
+        
+        # Replace the original fieldnames with the ordered one
+        fieldnames = ordered_fieldnames
+        
+        # Write to CSV
+        with open(csv_file, 'w', encoding='utf-8', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(games)
+        
+        print(f"Successfully converted {len(games)} games to CSV: {csv_file.name}")
+    except Exception as e:
+        print(f"Error converting JSON to CSV: {str(e)}")
+
+
+
 if __name__ == "__main__":
     games = process_game_files()
-    print(f"Total games extracted: {len(games)}")
+    # print(f"Total games extracted: {len(games)}")
     
-    # Print sample data
-    if games:
-        print("\nSample game data:")
-        for key, value in games[0].items():
-            print(f"{key}: {value}")
+    # # Print sample data
+    # if games:
+    #     print("\nSample game data:")
+    #     for key, value in games[0].items():
+    #         print(f"{key}: {value}")
+    # Function to combine all JSON files in the games folder into one file
+
+    
+    # Run the functions
+    # combine_json_files()
+    # convert_json_to_csv()
+    # Function to convert the combined JSON file to CSV
