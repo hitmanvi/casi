@@ -47,6 +47,7 @@ async function fetchAndSaveGameDetail(url, outputDir) {
         } else {
             console.error(`Failed to fetch ${gameName}: ${response.status} ${response.statusText}`);
         }
+        await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
         console.error(`Error fetching ${gameName}: ${error.message}`);
         // Wait a bit before retrying to avoid rate limiting
@@ -79,9 +80,6 @@ async function processGameUrls() {
             console.log(`Starting ${i + index + 1}/${gameUrls.length}: ${url}`);
             await fetchAndSaveGameDetail(url, outputDir);
         }));
-        
-        // Add a small delay between batches to avoid overwhelming the server
-        await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
     console.log('All game details have been processed.');
