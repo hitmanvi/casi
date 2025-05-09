@@ -56,7 +56,7 @@ async function fetchAndSaveGameDetail(url, outputDir) {
     }
 }
 // Read game URLs from the JSON file
-const gameUrls = JSON.parse(fs.readFileSync(path.join(__dirname, 'game_urls.json'), 'utf8'));
+const gameUrls = JSON.parse(fs.readFileSync(path.join(__dirname, 'missing_game_urls.json'), 'utf8'));
 // Create output directory if it doesn't exist
 const outputDir = path.join(__dirname, 'game_details');
 if (!fs.existsSync(outputDir)) {
@@ -71,7 +71,7 @@ async function processGameUrls() {
     const concurrencyLimit = 10;
     
     // Process in batches
-    for (let i = 6146; i < gameUrls.length; i += concurrencyLimit) {
+    for (let i = 0; i < gameUrls.length; i += concurrencyLimit) {
         const batch = gameUrls.slice(i, i + concurrencyLimit);
         console.log(`Processing batch ${Math.floor(i/concurrencyLimit) + 1}: ${i+1}-${Math.min(i+concurrencyLimit, gameUrls.length)} of ${gameUrls.length}`);
         
